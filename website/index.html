@@ -317,7 +317,27 @@ improvement we found out during the course of experimentation for this project.
     <!--****************************************************************************************************-->
     <h2 align="center">Preprocess Image with Attention Based GAN</h2>
     <p>
-      
+    When we analyzed the shortcomings of the current approach we noticed that certain artifacts in the image such as 
+    the accessories a person was wearing were not clear in the generated image. In order to tackle this problem we decided to
+    experiment with an Attention Based GAN as a preprocessing step. 
+    <br>
+    <br>
+    In conventional GANs, the generator produces an image by taking a random noise vector as input and 
+    transforming it using a number of convolutional layers and upsampling. The discriminator then assesses
+     the created image and determines whether it is authentic or phony by comparing it to the original.
+    <br>
+    <br>
+    In an attention-based GAN, the generator architecture includes a self-attention mechanism that enables the 
+    generator to deliberately concentrate on key areas of the image as it is being created. A learnable attention 
+    map that is created from the intermediate feature maps of the generator is used to implement the self-attention 
+    mechanism. The feature maps are then weighted using this attention map, giving the crucial areas of the image 
+    greater attention. This is the primary reason we decided to experiment with attention based GANs for the 
+    preprocessing step. In our preprocesing step we use the <a href="https://github.com/jantic/DeOldify" target="_blank">DeOldify</a> pipeline and this preprocessed image is passed as 
+    input to the modified reconstruction pipeline that involves the L2 loss in the reconstruction Loss instead of the L1 Loss. The entire pipeline is as shown below:
+    <br>
+    <br>
+    <img src="images/pipeline/Pipeline.png" alt="16726 Image" style="width:60%", class="center">
+
     </p>
     <hr>
     <hr>
