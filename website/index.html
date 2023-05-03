@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>16-726 Final Project</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+<!--
+* {
+  box-sizing: border-box;
+}
+-->
+
+.column {
+  float: left;
+  width: 50.00%;
+  padding: 5px;
+}
+
+.column4 {
+  float: left;
+  width: 25.00%;
+  padding: 2px;
+}
+
+.column5 {
+  float: left;
+  width: 20.00%;
+  padding: 2px;
+}
+
+.column6 {
+  float: left;
+  width: 16.66%;
+  padding: 2px;
+}
+
+.column3 {
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+}
+
+.column2 {
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+/* Style the header */
+header {
+  background-color: #58AADD;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  color: white;
+}
+
+article {
+  float: left;
+  align-content: center;
+  padding: 100px;
+  background-color: white;
+
+}
+
+/* Clear floats after the columns */
+section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the footer */
+footer {
+  background-color: #58AADD;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+/* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+</style>
+</head>
+<body>
+
+
+<header>
+  <h4>16-726 Learning Based Image Synthesis Final Project</h4>
+  <h2>Ancient to Modern Photos using GANs</h2>
+  <h5>Akhil Eppa (aeppa@andrew.cmu.edu), Roshini Rajesh Kannan (rrajeshk@andrew.cmu.edu), Sanjana Moudgalya (smoudgal@andrew.cmu.edu)</h5>
+</header>
+
+<section>
+
+  
+  <article>
+    <h2 align="center">Intoduction</h2>
+
+    Image restoration has seen a great deal of progress, with the creation of contemporary photographs using 
+    filters like denoising, colorization, and super resolution on old, grainy, black-and-white photos. 
+    In addition to this, the creators of Time-Travel Rephotography employ StyleGAN2 to transpose outdated 
+    images into a contemporary high-resolution image space. In order to imitate the characteristics of 
+    vintage cameras and the aging process of film, they use a physically based film deterioration operator. 
+    They eventually create the model output image using contextual loss and color transfer loss. 
+    The process of converting ancient photos to a modern versions gives the audience a perspective 
+    of how someone would have looked during the time and helps revisualize the aspect of color as well.
+    <hr>
+    <hr>
+    <h2 align="center">Problem Description</h2>
+    <p>
+
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Scope for Improvements</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Examples of Bad Results</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Perceptual Loss: Using L2 Loss instead of L1 Loss</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Preprocess Image with Attention Based GAN</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Color Transfer Loss: Using Huber Loss instead of Smooth L1 Loss</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Noise Regularizer: Reducing the weight of the noise regularizer</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Noise Regularizer: Reducing the strength of the noise regularizer</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Bicubic interpolation instead of bilinear</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Discussion</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <h2 align="center">Conclusion and Future Work</h2>
+    <p>
+      
+    </p>
+    <hr>
+    <hr>
+    <!--
+    <div class="row">
+        <div class="column6">
+            <p align="center">Original Image</p>
+        </div>
+        <div class="column6">
+            <p align="center">Perceptual Loss Weight 0.1</p>
+        </div>
+        <div class="column6">
+            <p align="center">Perceptual Loss Weight 0.01</p>
+        </div>
+        <div class="column6">
+          <p align="center">Perceptual Loss Weight 0.001</p>
+      </div>
+      <div class="column6">
+          <p align="center">Perceptual Loss Weight 0.0001</p>
+      </div>
+      <div class="column6">
+          <p align="center">Perceptual Loss Weight 0.00001</p>
+      </div>
+    </div>
+    <div class="row">
+        <div class="column6">
+          <img src="images/perc_weights/0_data.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column6">
+          <img src="images/perc_weights/0_stylegan_w_l1_10_0.1_2000.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column6">
+          <img src="images/perc_weights/0_stylegan_w_l1_10_0.01_2000.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column6">
+          <img src="images/perc_weights/0_stylegan_w_l1_10_0.001_2000.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column6">
+          <img src="images/perc_weights/0_stylegan_w_l1_10_0.0001_2000.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column6">
+          <img src="images/perc_weights/0_stylegan_w_l1_10_1e-05_2000.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+    </div>-->
+</article>
+</section>
+
+<footer>
+  <div class="row">
+        <div class="column">
+
+          <a href="https://learning-image-synthesis.github.io/sp23/" target="_blank">16-726 Course Website</a>
+        </div>
+        <div class="column">
+        Webpage resources reference: <a href="https://www.w3schools.com/" target="_blank">W3 Schools</a>
+        </div>
+    </div>
+
+</footer>
+
+</body>
+</html>
