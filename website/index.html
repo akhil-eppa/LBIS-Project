@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+  <script>
+  MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+  </script>
+  </head>
 <title>16-726 Final Project</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -128,6 +135,7 @@ footer {
     They eventually create the model output image using contextual loss and color transfer loss. 
     The process of converting ancient photos to a modern versions gives the audience a perspective 
     of how someone would have looked during the time and helps revisualize the aspect of color as well.
+
     <hr>
     <hr>
     <h2 align="center">Problem Description</h2>
@@ -150,10 +158,163 @@ footer {
     <hr>
     <h2 align="center">Perceptual Loss: Using L2 Loss instead of L1 Loss</h2>
     <p>
-      
+    An important component of the Image Reconstruction Loss is the Perceptual Loss. In the base implementation of the 
+    paper <a href="https://arxiv.org/pdf/2012.12261.pdf" target="_blank">Time Travel Rephotography</a>, L1 Loss is used 
+    in the perceptual loss component. But as we saw in the failure cases, certain fine grained details are not well preserved. 
+    There is a loss in the fine details such as the wrinkles and the skin textures which does not make the reconstruction look
+    accurate. In order to improve this aspect, we experiment with L2 Loss in the reconstruction and see that the final 
+    reconstructed image that is of better qaulity and the finer details are preserved better. <br>
+    L1 Loss can be defined as follows:
+    $$L1 Loss Function = \frac{\sum_{i=1}^{n} \left | y_{true} - y_{pred} \right |}{n} $$
+    <br>
+    <br>
+    Similarly we can define the L2 Loss function as follows: <br>
+    $$L2 Loss Function = \frac{\sum_{i=1}^{n} \left ( y_{true} - y_{pred} \right )^{2}}{n}$$
+
+    <br>
+    <br>
+    In L1 Loss we take the mean absolute difference while in case of L2 Loss we take the mean squared error. 
+    Both these loss functions are used commonly when it comes to image synthesis tasks and for reconstruction 
+    purposes. The L2 loss is more sensitive to outliers than the L1 loss, meaning that it gives more weight to large errors. 
+    This can be useful in situations where we want to penalize large errors more severely. 
+    <br>
+    In our experimentation we saw that L2 Loss gave better attention to detail than L1 loss did. The use of L2 Loss 
+    certainly provided us an improvement over using L1 Loss. <br>
+    Let us take a look at few examples below. <br>
+    <br>
+    In this first example, let us concentrate on the areas demarcated by the red rectangles. If you compare the 
+    content within the red rectangles for the original image, the image generated with L1 Loss and the image generated with L2 loss,
+    we see that details with L2 loss are much more finer and sharper and better preserved generally during the reconstruction. 
+    As you can see, the hair details and the beard details are much more sharper when L2 Loss is used rather than  
+    L1 Loss. Additionally the texture in the wrinkles specifically between the eyebrows and the forehead is much better 
+    preserved than when L1 Loss was used. Thus we can say that L2 loss certainly provided an improvement over the L1 Loss. 
+    
+    <div class="row">
+        <div class="column3">
+            <p align="center">Original Old Image</p>
+        </div>
+        <div class="column3">
+            <p align="center">Image Reconstructed with L1 Loss</p>
+        </div>
+        <div class="column3">
+            <p align="center">Image Reconstructed with L2 Loss</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column3">
+          <img src="images/l2_loss_markings/old.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column3">
+          <img src="images/l2_loss_markings/l1_loss.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column3">
+          <img src="images/l2_loss_markings/l2_loss.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+    </div>
+
+    <br>
+    <br>
+    A few more examples are shown below in order to demonstrate that L2 Loss generalises well to other images as well and this is 
+    not a one of case of improvement. The examples are as shown below. 
+    <div class="row">
+        <div class="column3">
+            <p align="center">Original Old Image</p>
+        </div>
+        <div class="column3">
+            <p align="center">Image Reconstructed with L1 Loss</p>
+        </div>
+        <div class="column3">
+            <p align="center">Image Reconstructed with L2 Loss</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column3">
+          <img src="images/old_images/old_1.jpeg" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column3">
+          <img src="images/with_l1_loss/old_1.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+        <div class="column3">
+          <img src="images/with_l2_loss_both/old_1.png" alt="16726 Image" style="width:60%", class="center">
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with L1 Loss</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with L2 Loss</p>
+      </div>
+  </div>
+  <div class="row">
+      <div class="column3">
+        <img src="images/old_images/old_2.jpeg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/with_l1_loss/old_2.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/with_l2_loss_both/old_2.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="column3">
+        <p align="center">Original Old Image</p>
+    </div>
+    <div class="column3">
+        <p align="center">Image Reconstructed with L1 Loss</p>
+    </div>
+    <div class="column3">
+        <p align="center">Image Reconstructed with L2 Loss</p>
+    </div>
+</div>
+<div class="row">
+    <div class="column3">
+      <img src="images/old_images/old_3.jpeg" alt="16726 Image" style="width:60%", class="center">
+    </div>
+    <div class="column3">
+      <img src="images/with_l1_loss/old_3.png" alt="16726 Image" style="width:60%", class="center">
+    </div>
+    <div class="column3">
+      <img src="images/with_l2_loss_both/old_3.png" alt="16726 Image" style="width:60%", class="center">
+    </div>
+</div>
+
+<div class="row">
+  <div class="column3">
+      <p align="center">Original Old Image</p>
+  </div>
+  <div class="column3">
+      <p align="center">Image Reconstructed with L1 Loss</p>
+  </div>
+  <div class="column3">
+      <p align="center">Image Reconstructed with L2 Loss</p>
+  </div>
+</div>
+<div class="row">
+  <div class="column3">
+    <img src="images/old_images/old_5.jpeg" alt="16726 Image" style="width:60%", class="center">
+  </div>
+  <div class="column3">
+    <img src="images/with_l1_loss/old_5.png" alt="16726 Image" style="width:60%", class="center">
+  </div>
+  <div class="column3">
+    <img src="images/with_l2_loss_both/old_5.png" alt="16726 Image" style="width:60%", class="center">
+  </div>
+</div>
+<br>
+As we can see from all the above examples, L2 Loss has clearly provided a better result overall than L1 Loss. This is one
+improvement we found out during the course of experimentation for this project. 
+
     </p>
     <hr>
     <hr>
+    <!--****************************************************************************************************-->
     <h2 align="center">Preprocess Image with Attention Based GAN</h2>
     <p>
       
