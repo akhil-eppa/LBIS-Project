@@ -125,7 +125,7 @@ footer {
 
   
   <article>
-    <h2 align="center">Intoduction</h2>
+    <h2 align="center">Introduction</h2>
 
     Image restoration has seen a great deal of progress, with the creation of contemporary photographs using 
     filters like denoising, colorization, and super resolution on old, grainy, black-and-white photos. 
@@ -146,7 +146,38 @@ footer {
     <hr>
     <h2 align="center">Scope for Improvements</h2>
     <p>
-      
+    Based on our review of the work  <a href="https://arxiv.org/pdf/2012.12261.pdf" target="_blank">Time Travel Rephotography</a> we decided to experiment 
+    with a few potential improvements that we can try out in order to improve the quality of the images. The scopes 
+    for improvement are as listed below: 
+    <br>
+    <div class="center">
+    <ul style="list-style-type:circle" >
+      <li>Reduce effect of brightness and contrast of the input image on the predicted skin color : We experiment 
+        with using Huber Loss instead of Smooth L1 Loss. 
+      </li>
+      <br>
+      <li>Improve inaccurately predicting skin texture from images in certain cases : We experiment with a preprocessing
+        strategy and different loss combinations. We also try out noise regularization and changing its hyperparameters. 
+      </li>
+      <br>
+      <li>Utilizing L2 Loss for reconstruction instead of L1 Loss : In order to better capture the finer details, we implement
+        the L2 Loss instead of the L1 Loss for the reconstruction and determine whether there is an improvement. </li>
+      <br>
+        <li>
+        Using a preprocessing pipeline to remove artifacts: We noticed that accessories present around people's faces 
+        such as hats and extensive beards tend to be not reconstructed correctly. Hence we try out a preprocessing 
+        strategy based on an attention based GAN in order to capture these details better. 
+      </li>
+      <br>
+      <li>
+        Improve the strength of noise regularizer
+      </li>
+      <br>
+      <li>
+        Using a better interpolation method 
+      </li>
+    </ul>
+  </div>
     </p>
     <hr>
     <hr>
@@ -337,16 +368,234 @@ improvement we found out during the course of experimentation for this project.
     <br>
     <br>
     <img src="images/pipeline/Pipeline.png" alt="16726 Image" style="width:60%", class="center">
+    <br>
+    <br>
+    Let us now look at the a specific case where there is drastic improvement in the structure and the sharpness of the 
+    artifiacts such as the cap and the specific beard shape when the preprocessing is performed before passing the 
+    preprocessed image through the reconstruction pipeline. In the given example below notice the areas within the 
+    red rectangles. When we analyze this example, we see that the structure of the cap is much better preserved 
+    when the preprocessing is done on the image. The chequered pattern in the hat is more clearly preserved in the reconstructed
+    image. Additionally when we look at the structure of the moustache, we see that the overall shape and sharpness of the 
+    moustache is better preserved overall. Hence, the preprocessing pipeline made out of the Attention-Based GAN certainly
+    improved the quality of the regenerated image. 
 
-    </p>
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with L2 Loss</p>
+      </div>
+      <div class="column3">
+          <p align="center">Preprocessed Image Reconstructed with L2 Loss</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/Att_gan_markings/old.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/Att_gan_markings/l2_loss.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/Att_gan_markings/l2_loss_preprocess.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
+
+    In order to show that this improvement in the quality of the images is not isolated to specific set of images, 
+    the experiment is also run on a bunch of other images and even in these cases an improvement is seen when 
+    the image is preprocessed before passing it through the reconstruction pipeline. We are hence able to generalize
+    that this improvment works across a variety of images and is clearly not isolated to a particular type of an image.  
+    <br>
+    <br>
+
+    In the below example it can seen how the wrinkles become more accurate and finer when the preprocessing is 
+    done rather then when there is no preprocessing done. 
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with L2 Loss</p>
+      </div>
+      <div class="column3">
+          <p align="center">Preprocessed Image Reconstructed with L2 Loss</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/old_images/abraham.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/with_l2_loss_both/abraham.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/l2_both_and_preprocess/abraham.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
+    <br>
+    <br>
+    In the below example, again we can see how the wrinkles are more accurate and also the hair pattern is clearly
+    much more accurate in comparison to not doing the preprocessing. Hence we can see that preprocessing the image 
+    clearly provides an update here as well. 
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with L2 Loss</p>
+      </div>
+      <div class="column3">
+          <p align="center">Preprocessed Image Reconstructed with L2 Loss</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/old_images/old_1.jpeg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/with_l2_loss_both/old_1.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/l2_both_and_preprocess/old_1.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
+    <br>
+    <br>
+    In the example below, both the wrinkles and the hat that the man is wearing become more clear when the processing 
+    is done. Without the preprocesing it seemed like the hat had the texture of hair but when the preprocessed image 
+    is used, the hat texture more closely resembles the input image. Furthermore, the wrinkles are also much more well 
+    defined than when no preprocessing was performed. Once again an improvement is seen in case of this image as well. 
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with L2 Loss</p>
+      </div>
+      <div class="column3">
+          <p align="center">Preprocessed Image Reconstructed with L2 Loss</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/old_images/old_2.jpeg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/with_l2_loss_both/old_2.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/l2_both_and_preprocess/old_2.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
+    <br>
+    <br>
+    Finally in the example below we can see how the wrinkles are better preserved and also the shape of the eyes 
+    is preserved better when the image is preprocessed rather than when there is no preprocessing that is 
+    performed. Overall all these examples showcase that preprocesing does improve the quality of the final 
+    reconstructed image. 
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with L2 Loss</p>
+      </div>
+      <div class="column3">
+          <p align="center">Preprocessed Image Reconstructed with L2 Loss</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/old_images/old_5.jpeg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/with_l2_loss_both/old_5.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/l2_both_and_preprocess/old_5.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
+
+  </p>
     <hr>
     <hr>
+    <!--****************************************************************************************************-->
     <h2 align="center">Color Transfer Loss: Using Huber Loss instead of Smooth L1 Loss</h2>
     <p>
-      
+    In this particular proposal, we try to use Huber Loss instead of Smooth L1 Loss in order to see 
+    whether modifying the loss function in this way would improve the colors in the generated image or not. Though 
+    Huber Loss and Smooth L1 Loss are quite similar, there are subtle differences which need to be discussed. Let us first look 
+    at the formulae for both Huber Loss and Smooth L1 Loss. 
+    <br>
+    <br>
+    Smooth L1 Loss is explained as the following: 
+    $$ l\left (x, y  \right ) = L = \left \{ l_{1}, ... ,l_{n} \right \}^{T}
+    \\
+    \\
+    l_{n} = \begin{cases}
+          0.5\left ( x_{n} - y_{n} \right )^{2} / beta & if \left | x_{n} - y_{n} \right | < beta\\
+          \left | x_{n} - y_{n} \right | - 0.5 * beta & ,otherwise\\
+        \end{cases} 
+    $$
+    <br>
+    <br>
+    Huber Loss is explained as the following:
+    $$
+    l\left (x, y  \right ) = L = \left \{ l_{1}, ... ,l_{n} \right \}^{T}
+    \\
+    \\
+    \\
+    l_{n} = \begin{cases}
+          0.5\left ( x_{n} - y_{n} \right )^{2} & if \left | x_{n} - y_{n} \right | < delta\\
+          delta * \left (\left | x_{n} - y_{n} \right | - 0.5 * delta  \right ) & ,otherwise\\
+        \end{cases}  
+    $$
+
+    <br>
+    <br>
+
+    Smooth L1 Loss is quadratic for small errors and linear for large errors. That said, it behaves in a manner
+    similar to MSE loss for small errors but it becomes less sensitive to outliers than MSE loss when the errors 
+    are large. 
+    On the other hand, Huber Loss is a compromise between MSE Loss and the Mean Absolute Error Loss (MAE) loss. 
+    For small errors, Huber Loss behaves like MSE loss, while for large errors, it behaves like MAE loss. 
+    This makes Huber Loss less sensitive to outliers than MSE loss while maintaining its differentiability. 
+    In our case, we test with Huber Loss with delta parameter set as 0.5. 
+    <br>
+    <br>
+    Let us take a look at an example below. As we can see from the example below, using Huber Loss over Smooth L1 loss
+    does not provide drastic improvement in the color of the generated image. Rather it looks a little washed out 
+    when we make use of Huber Loss instead of Smooth L1 Loss. Hence this proposal does not provide us with a great improvement
+    as anticipated. From this we can conclude that it is beneficial to stick with Smooth L1 Loss instead of going 
+    with Huber Loss. 
+    <br>
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with Smooth L1 Loss</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with Huber Loss</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/old_images/old_1.jpeg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/color_transfer/smooth_l1.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/color_transfer/huber.png" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
     </p>
     <hr>
     <hr>
+    <!--****************************************************************************************************-->
     <h2 align="center">Noise Regularizer: Reducing the weight of the noise regularizer</h2>
     <p>
       
