@@ -170,11 +170,11 @@ footer {
       </li>
       <br>
       <li>
-        Improve the strength of noise regularizer
+        Improve the strength of noise regularizer: We came up with different ways of reducing the noise regularizer strength that optimizes the w+ global style codes in an aim to focus more on local features. 
       </li>
       <br>
       <li>
-        Using a better interpolation method 
+        Using a better interpolation method: We experimented with a bicubic interpolation method instead of bilinear to see if it provides more finer details. 
       </li>
     </ul>
   </div>
@@ -596,22 +596,130 @@ improvement we found out during the course of experimentation for this project.
     <hr>
     <hr>
     <!--****************************************************************************************************-->
-    <h2 align="center">Noise Regularizer: Reducing the weight of the noise regularizer</h2>
+    <h2 align="center">Noise Regularizer</h2>
     <p>
-      
+    During the image synthesis process, the global w+ style codes(StyleGAN2 network's learned style vectors) are optimized with a strong noise regularizer.
+    By a strong noise regularizer, we mean that a regularization technique is used to control the noise input to the StyleGAN2 network.
+    This ensures that the noise input is not carrying any significant signal and is only used to introduce controlled randomness to the image synthesis process.
+    So, having a strong regularizer for global w+ style codes might make it hard to preserve local image details, textures, etc.
+    We experimented with two different ways of reducing the strength of this noise regularizer. One was to just reduce the weight of the noise regularizer loss and the 
+    other way was to reduce the dimension until which the loss is calculated.
+    <h3 align="center">Reducing the weight</h3>
+    We experimented with a smaller weight for the noise regularizer loss of 5000 as opposed to the default value of 50000. But in the below images we see that this does not work and makes the reconstructed image different from the original old image.
+    So, an alternate method to reduce the strength of the regularizer had to be found.
+    <br>
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with noise regularizer weight 50000</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with noise regularizer weight 5000</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/noise_reg/weight/input.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/noise_reg/weight/before.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/noise_reg/weight/after.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
     </p>
-    <hr>
-    <hr>
-    <h2 align="center">Noise Regularizer: Reducing the strength of the noise regularizer</h2>
+   
+
+    <h3 align="center">Reducing the pyramid resolution</h3>
     <p>
-      
+      The regularization is performed on noise maps at multiple resolution scales. 
+      A pyramid structure is created by downsampling the original noise map at different resolutions, with each level 
+      being downsampled by averaging 2x2 pixel neighborhoods and multiplying the result by 2 to maintain the expected unit variance.
+      The purpose of the pyramid structure is to create a set of downsampled noise maps that can be used for regularization without affecting 
+      the actual image synthesis process. These downsampled noise maps are only used to compute the regularization loss during training and do not play a
+      role in the final image synthesis. <br /><br />Overall, the pyramid downsampled noise maps are used to regularize the noise maps at different resolutions, 
+      providing a smoother and more stable signal that can be used to synthesize high-quality images.
+      This pyramid structure is created by taking each noise map that is greater than 8x8 in size in the original method.
+      To reduce the strength we take noise maps with resolution just greater than 16x16 opposed to 8x8 in original method.
+      By this method, we were able to get improvements in preserving the basic structure of the input image in comparison to having a strong regularizer.
+      <br>
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with strong noise regularizer</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with weak noise regularizer</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/noise_reg/strength/input.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/noise_reg/strength/before.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/noise_reg/strength/after.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/noise_reg/strength/input2.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/noise_reg/strength/before2.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/noise_reg/strength/after2.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
+    In the above images we see that the ear of Abraham Lincoln and lips of Mahatma Gandhi look similar to the input image when we reduce the strength of the regularizer.
+    
     </p>
     <hr>
     <hr>
     <h2 align="center">Bicubic interpolation instead of bilinear</h2>
     <p>
+    During resizing processes in the image synthesis process, Bilinear interpolation is used. We experimented by substituting this with Bicubic interpolation. This gave outputs with more finer details such as wrinkles preserved as shown in the image below.
+    This happens because Bicubic interpolation uses a larger window of neighboring pixels compared to bilinear and hence, more finer details are preserved.
+    <br />Given a grid of values f(i,j), where i and j are integer indices, and a point (x,y) in between the grid points, the bilinear interpolation formula for estimating the value f(x,y) is:
+    <p align="center">f(x,y) = f(i,j)(1-u)(1-v) + f(i+1,j)u(1-v) + f(i,j+1)(1-u)v + f(i+1,j+1)uv</p>
+    where i = floor(x), j = floor(y), u = x-i, and v = y-j.
+    <br/>
+    Given a grid of values f(i,j), where i and j are integer indices, and a point (x,y) in between the grid points, the bicubic interpolation formula for estimating 
+    the value f(x,y) is:
+    <p align="center">f(x,y) = ∑<sub>i=0</sub><sup>3</sup> ∑<sub>j=0</sub><sup>3</sup> a<sub>i,j</sub> * x<sup>i</sup> * y<sup>j</sup></p> 
+         where a(i,j) are the coefficients of the cubic function, which are determined by solving a system of linear equations using the values of the grid points and their derivatives.
+    <div class="row">
+      <div class="column3">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with bilinear interpolation</p>
+      </div>
+      <div class="column3">
+          <p align="center">Image Reconstructed with bicubic interpolation</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column3">
+        <img src="images/bicubic/input.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/bicubic/before.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+      <div class="column3">
+        <img src="images/bicubic/after.jpg" alt="16726 Image" style="width:60%", class="center">
+      </div>
+    </div>
       
-    </p>
+  </p>
     <hr>
     <hr>
     <h2 align="center">Discussion</h2>
