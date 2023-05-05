@@ -140,7 +140,23 @@ footer {
     <hr>
     <h2 align="center">Problem Description</h2>
     <p>
-
+    The main objective of the Time-Travel Rephotography paper is to replicate the experience of traveling back in time and capturing portraits of historical figures 
+    with modern cameras. The focus is on portraits captured around a century ago, in the early days of photography, which are difficult to restore due to the loss of 
+    quality caused by aging and the limitations of early photographic technology. <br>
+    To replicate the experience of rephotographing historical figures with modern cameras, it is important to consider the differences in color sensitivity between 
+    antique and modern films, as well as factors such as blur, fading, poor exposure, low resolution, and other artifacts associated with antique photos. The Time-Travel 
+    Rephotography paper does a great job at generating modern photographs by considering artifact removal, colorization, super-resolution, and contrast adjustment in one 
+    unified framework. This framework works much better than other state-of-the-art image restoration filters. They also display rephotographed portraits of many historical 
+    figures including presidents, authors, artists, and scientists. This is achieved by using StyleGAN2. Their approach involves creating a counterpart of an input antique 
+    photograph in the StyleGAN2 latent space. To achieve this, style mixing is used, where the predictions from two feed-forward encoders: one that models face identity (e4e)
+     and another that models face color (E) is combined. This generates a sibling image that is optimized to match the input photograph after undergoing degradation to 
+    simulate an antique image. The color, contrast, and skin textures of the sibling image is used to guide the optimization of the latent code. The whole system diagram 
+    can be seen in the below figure (directly taken from the paper) -  
+      <img src="images/pipeline/paper_flowchart.png" alt="16726 Image" style="width:40%", class="center">
+    <br>
+    Inspired by this paper, we first perform an error analysis on the cases where this model fails to perform well. After this, we implement a few techniques which improves 
+    the performance of the model (including the quality of the modern images produced). The results from our error analysis as well as proposed improvements are listed in 
+    the next sections.
     </p>
     <hr>
     <hr>
@@ -183,7 +199,91 @@ footer {
     <hr>
     <h2 align="center">Examples of Bad Results</h2>
     <p>
-      
+    We performed some error analysis by inspecting how the results change by giving varied antique images. We chose examples which had artifacts such as hats or glasses. 
+    A few examples did not have enough contrast in the image or where the brightness was less. Below are a few failure cases we identified - <br> 
+    <ul>
+      <li>
+    In this example, the contrast of the man's beard with the background is very less. Hence, in the modern version of the photo, the part of the beard which clashes with 
+    the background has been erased. A similar thing has happened with the man's hair as well. 
+    <div class="row">
+        <div class="column2">
+            <p align="center">Original Old Image</p>
+        </div>
+        <div class="column2">
+            <p align="center">Reconstructed Image</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column2">
+          <img src="images/bad_cases/example2.png" alt="16726 Image" style="width:40%", class="center">
+        </div>
+        <div class="column2">
+          <img src="images/bad_cases/example2_r.png" alt="16726 Image" style="width:40%", class="center">
+        </div>
+    </div>
+    </li>
+
+    <li>In the next example, the antique image has many features (many wrinkles, glasses, and noisy background). The contrast and brightness are also a bit low. These might 
+    be a few reasons for failure. The modern photo is very different from the original image.
+    <div class="row">
+      <div class="column2">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column2">
+          <p align="center">Reconstructed Image</p>
+      </div>
+  </div>
+  <div class="row">
+      <div class="column2">
+        <img src="images/bad_cases/example.png" alt="16726 Image" style="width:40%", class="center">
+      </div>
+      <div class="column2">
+        <img src="images/bad_cases/example_r.png" alt="16726 Image" style="width:40%", class="center">
+      </div>
+  </div>
+  </li>
+
+  <li>Here, the main issue is the artifact existing in the antique photo. The hat worn by the man is translated into hair in the modern photo. The texture is also like hair. 
+    This might be because of the shape of the hat. This is an important failure case we focus on.
+    <div class="row">
+      <div class="column2">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column2">
+          <p align="center">Reconstructed Image</p>
+      </div>
+  </div>
+  <div class="row">
+      <div class="column2">
+        <img src="images/bad_cases/example3.png" alt="16726 Image" style="width:40%", class="center">
+      </div>
+      <div class="column2">
+        <img src="images/bad_cases/example3_r.png" alt="16726 Image" style="width:40%", class="center">
+      </div>
+  </div>
+  </li>
+
+  <li> This is an example of a subtle failure. In the antique photo, the man's hair is merging with the background since it is a light one. The man actually has scattered 
+    hair strands. However, in the modern photo, it looks like the man has dense hair, especially on the right side. This is a misrepresentation of the antique photo.
+    <div class="row">
+      <div class="column2">
+          <p align="center">Original Old Image</p>
+      </div>
+      <div class="column2">
+          <p align="center">Reconstructed Image</p>
+      </div>
+  </div>
+  <div class="row">
+      <div class="column2">
+        <img src="images/bad_cases/example4.png" alt="16726 Image" style="width:40%", class="center">
+      </div>
+      <div class="column2">
+        <img src="images/bad_cases/example4_r.png" alt="16726 Image" style="width:40%", class="center">
+      </div>
+  </div>
+  </li>
+  </ul>
+
     </p>
     <hr>
     <hr>
@@ -722,15 +822,28 @@ improvement we found out during the course of experimentation for this project.
   </p>
     <hr>
     <hr>
-    <h2 align="center">Discussion</h2>
+    <h2 align="center">Conclusion and Discussion</h2>
     <p>
-      
+    From our efforts of improving the model in the base paper, we were able to achieve the following results - 
+    <ul>
+      <li> We were able to improve the quality of the images produced by preserving the fine features of the antique photo. This was achieved by switching to L2 loss, 
+        reducing the strength of the noise regularizer, and by using bicubic interpolation.</li>
+      <li> We experimented with Huber loss, however could not see much change in color transfer 
+        results.</li>
+      <li> Another major improvement we made was preprocessing input image with attention based GAN (DeOldify) to remove artifacts before generating modern image. This 
+        helped to reproduce correct images of artifacts such as hats, glasses, etc. </li>
+    </ul> 
     </p>
     <hr>
     <hr>
-    <h2 align="center">Conclusion and Future Work</h2>
+    <h2 align="center">Future Work</h2>
     <p>
-      
+    In the future, we propose using the pSp (pixel2style2pixel) encoder instead of the e4e (encoder4editing) encoder. The former is said to work better than the latter when 
+    an image with a distribution different from the training data is given during inference time. pSp encoder also helps to capture local features of the image better. <br>
+    Another direction we propose to work in the future is the use of some other dataset for training. The authors of the base paper have declared that this model might 
+    contain some bias due to the underrepresentation of certain groups while using StyleGAN2. This can be fixed by using a dataset with lesser bias. One such example is 
+    the FairFace dataset. Retraining the model with this dataset can help reduce the bias.
+
     </p>
     <hr>
     <hr>
